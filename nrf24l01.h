@@ -107,7 +107,7 @@ typedef struct {
     uint8_t				NRF_IRQ_preempt_priority;
     uint8_t				NRF_IRQ_sub_priority;
 
-} NRF24L01;
+} nrf24L01_Dev;
 
 typedef enum {
     NRF_OK,
@@ -116,70 +116,70 @@ typedef enum {
 
 
 /* Initialization routine */
-NRF_RESULT NRF_Init(NRF24L01* dev);
+NRF_RESULT NRF_Init(nrf24L01_Dev* dev);
 
 /* EXTI Interrupt Handler */
-void NRF_IRQ_Handler(NRF24L01* dev);
+void NRF_IRQ_Handler(nrf24L01_Dev* dev);
 
 /* Blocking Data Sending / Receiving FXs */
-NRF_RESULT NRF_SendPacket(NRF24L01* dev,uint8_t* data);
-NRF_RESULT NRF_ReceivePacket(NRF24L01* dev,uint8_t* data);
+NRF_RESULT NRF_SendPacket(nrf24L01_Dev* dev,uint8_t* data);
+NRF_RESULT NRF_ReceivePacket(nrf24L01_Dev* dev,uint8_t* data);
 
 /* Non-Blocking Data Sending / Receiving FXs */
-NRF_RESULT NRF_PushPacket(NRF24L01* dev,uint8_t* data);
-NRF_RESULT NRF_PullPacket(NRF24L01* dev,uint8_t* data);
+NRF_RESULT NRF_PushPacket(nrf24L01_Dev* dev,uint8_t* data);
+NRF_RESULT NRF_PullPacket(nrf24L01_Dev* dev,uint8_t* data);
 
 /* LOW LEVEL STUFF (you don't have to look in here...)*/
-NRF_RESULT NRF_SendCommand(NRF24L01* dev, uint8_t cmd, uint8_t* tx,uint8_t* rx,uint8_t len);
+NRF_RESULT NRF_SendCommand(nrf24L01_Dev* dev, uint8_t cmd, uint8_t* tx,uint8_t* rx,uint8_t len);
 /* CMD */
-NRF_RESULT NRF_ReadRegister(NRF24L01* dev,uint8_t reg, uint8_t* data);
-NRF_RESULT NRF_WriteRegister(NRF24L01* dev,uint8_t reg, uint8_t* data);
-NRF_RESULT NRF_ReadRXPayload(NRF24L01* dev,uint8_t* data);
-NRF_RESULT NRF_WriteTXPayload(NRF24L01* dev,uint8_t* data);
-NRF_RESULT NRF_FlushTX(NRF24L01* dev);
-NRF_RESULT NRF_FlushRX(NRF24L01* dev);
+NRF_RESULT NRF_ReadRegister(nrf24L01_Dev* dev,uint8_t reg, uint8_t* data);
+NRF_RESULT NRF_WriteRegister(nrf24L01_Dev* dev,uint8_t reg, uint8_t* data);
+NRF_RESULT NRF_ReadRXPayload(nrf24L01_Dev* dev,uint8_t* data);
+NRF_RESULT NRF_WriteTXPayload(nrf24L01_Dev* dev,uint8_t* data);
+NRF_RESULT NRF_FlushTX(nrf24L01_Dev* dev);
+NRF_RESULT NRF_FlushRX(nrf24L01_Dev* dev);
 
 /* RF_SETUP */
-NRF_RESULT NRF_SetDataRate(NRF24L01* dev,NRF_DATA_RATE rate);
-NRF_RESULT NRF_SetTXPower(NRF24L01* dev,NRF_TX_PWR pwr);
-NRF_RESULT NRF_SetCCW(NRF24L01* dev,uint8_t activate);
+NRF_RESULT NRF_SetDataRate(nrf24L01_Dev* dev,NRF_DATA_RATE rate);
+NRF_RESULT NRF_SetTXPower(nrf24L01_Dev* dev,NRF_TX_PWR pwr);
+NRF_RESULT NRF_SetCCW(nrf24L01_Dev* dev,uint8_t activate);
 
 /* STATUS */
-NRF_RESULT NRF_ClearInterrupts(NRF24L01* dev);
+NRF_RESULT NRF_ClearInterrupts(nrf24L01_Dev* dev);
 
 /* RF_CH */
-NRF_RESULT NRF_SetRFChannel(NRF24L01* dev,uint8_t ch);
+NRF_RESULT NRF_SetRFChannel(nrf24L01_Dev* dev,uint8_t ch);
 
 /* SETUP_RETR */
-NRF_RESULT NRF_SetRetransmittionCount(NRF24L01* dev,uint8_t count);
-NRF_RESULT NRF_SetRetransmittionDelay(NRF24L01* dev,uint8_t delay);
+NRF_RESULT NRF_SetRetransmittionCount(nrf24L01_Dev* dev,uint8_t count);
+NRF_RESULT NRF_SetRetransmittionDelay(nrf24L01_Dev* dev,uint8_t delay);
 
 /* SETUP_AW */
-NRF_RESULT NRF_SetAddressWidth(NRF24L01* dev,NRF_ADDR_WIDTH width);
+NRF_RESULT NRF_SetAddressWidth(nrf24L01_Dev* dev,NRF_ADDR_WIDTH width);
 
 /* EN_RXADDR */
-NRF_RESULT NRF_EnableRXPipe(NRF24L01* dev,uint8_t pipe);
+NRF_RESULT NRF_EnableRXPipe(nrf24L01_Dev* dev,uint8_t pipe);
 
 /* EN_AA */
-NRF_RESULT NRF_EnableAutoAcknowledgement(NRF24L01* dev,uint8_t pipe);
+NRF_RESULT NRF_EnableAutoAcknowledgement(nrf24L01_Dev* dev,uint8_t pipe);
 
 /* CONFIG */
-NRF_RESULT NRF_EnableCRC(NRF24L01* dev,uint8_t activate);
-NRF_RESULT NRF_SetCRCWidth(NRF24L01* dev,NRF_CRC_WIDTH width);
-NRF_RESULT NRF_PowerUp(NRF24L01* dev,uint8_t powerUp);
-NRF_RESULT NRF_RXTXControl(NRF24L01* dev,NRF_TXRX_STATE rx);
-NRF_RESULT NRF_EnableRXDataReadyIRQ(NRF24L01* dev,uint8_t activate);
-NRF_RESULT NRF_EnableTXDataSentIRQ(NRF24L01* dev,uint8_t activate);
-NRF_RESULT NRF_EnableMaxRetransmitIRQ(NRF24L01* dev,uint8_t activate);
+NRF_RESULT NRF_EnableCRC(nrf24L01_Dev* dev,uint8_t activate);
+NRF_RESULT NRF_SetCRCWidth(nrf24L01_Dev* dev,NRF_CRC_WIDTH width);
+NRF_RESULT NRF_PowerUp(nrf24L01_Dev* dev,uint8_t powerUp);
+NRF_RESULT NRF_RXTXControl(nrf24L01_Dev* dev,NRF_TXRX_STATE rx);
+NRF_RESULT NRF_EnableRXDataReadyIRQ(nrf24L01_Dev* dev,uint8_t activate);
+NRF_RESULT NRF_EnableTXDataSentIRQ(nrf24L01_Dev* dev,uint8_t activate);
+NRF_RESULT NRF_EnableMaxRetransmitIRQ(nrf24L01_Dev* dev,uint8_t activate);
 
 /* RX_ADDR_P0 */
-NRF_RESULT NRF_SetRXAddress_P0(NRF24L01* dev,uint8_t* address);	// 5bytes of address
+NRF_RESULT NRF_SetRXAddress_P0(nrf24L01_Dev* dev,uint8_t* address);	// 5bytes of address
 
 /* TX_ADDR */
-NRF_RESULT NRF_SetTXAddress(NRF24L01* dev,uint8_t* address);	// 5bytes of address
+NRF_RESULT NRF_SetTXAddress(nrf24L01_Dev* dev,uint8_t* address);	// 5bytes of address
 
 /* RX_PW_P0 */
-NRF_RESULT NRF_SetRXPayloadWidth_P0(NRF24L01* dev,uint8_t width);
+NRF_RESULT NRF_SetRXPayloadWidth_P0(nrf24L01_Dev* dev,uint8_t width);
 
 /* FEATURE */
 
