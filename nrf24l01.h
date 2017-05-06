@@ -78,23 +78,42 @@ typedef enum{
 } NRF_TXRX_STATE;
 
 typedef struct {
-    SPI_HandleTypeDef* 	spi;
+
+    /* nrf24L01 Configuration Parameter 
+       PayloadLength   : maximum is 32 Bytes
+       RetransmitCount : can be 0~15 times
+       RetransmitDelay : 0[250uS]~0x0F(4000us), LSB:250us
+    */
     NRF_DATA_RATE 		DATA_RATE;
-    uint8_t				RF_CHANNEL;
-    uint8_t				PayloadLength;
-    uint8_t				RetransmitCount;
-    uint8_t				RetransmitDelay;
     NRF_TX_PWR			TX_POWER;
-    uint8_t*			RX_ADDRESS;
-    uint8_t*			TX_ADDRESS;
     NRF_CRC_WIDTH		CRC_WIDTH;
     NRF_ADDR_WIDTH		ADDR_WIDTH;
     NRF_TXRX_STATE		STATE;
+    uint8_t				PayloadLength;
+    uint8_t				RetransmitCount;
+    uint8_t				RetransmitDelay;
+
     uint8_t				BUSY_FLAG;
 
+    /* Usr interface, Rx/Tx Buffer */
     uint8_t*			RX_BUFFER;
     uint8_t*			TX_BUFFER;
 
+    /* nrf24L01 transmit/recive freq define */
+    /* channel can be 0~127 */
+    uint8_t				RF_CHANNEL;
+
+    /* nrf24L01 Tx/Rx address
+       Pipe [0:1] has maximum 5 Bytes address
+       Pipe [2:5] has 3 Bytes address
+    */
+    uint8_t*			RX_ADDRESS;
+    uint8_t*			TX_ADDRESS;
+
+    /* STM32 SPI Peripheral HAL handle */
+    SPI_HandleTypeDef*  spi;
+
+    /* STM32 GPIO/EXTI Peripheral Parameter */
     GPIO_TypeDef*		NRF_CSN_GPIOx;	// CSN pin
     uint16_t			NRF_CSN_GPIO_PIN;
 
