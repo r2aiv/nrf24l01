@@ -2,6 +2,7 @@
 #define NRF24L01_H_
 
 #include "stm32f4xx_hal.h"
+#include <stdint.h>
 
 /* Registers */
 #define NRF_CONFIG		0x00
@@ -47,70 +48,70 @@
 
 #define NRF_SPI_TIMEOUT	100000
 
-typedef enum{
-	NRF_DATA_RATE_250KBPS=1,
-	NRF_DATA_RATE_1MBPS=0,
-	NRF_DATA_RATE_2MBPS=2
+typedef enum {
+    NRF_DATA_RATE_250KBPS = 1,
+    NRF_DATA_RATE_1MBPS   = 0,
+    NRF_DATA_RATE_2MBPS   = 2
 } NRF_DATA_RATE;
 
-typedef enum{
-	NRF_TX_PWR_M18dBm=0,
-	NRF_TX_PWR_M12dBm=1,
-	NRF_TX_PWR_M6dBm=2,
-	NRF_TX_PWR_0dBm=3
+typedef enum {
+    NRF_TX_PWR_M18dBm     = 0,
+    NRF_TX_PWR_M12dBm     = 1,
+    NRF_TX_PWR_M6dBm      = 2,
+    NRF_TX_PWR_0dBm       = 3
 } NRF_TX_PWR;
 
-typedef enum{
-	NRF_ADDR_WIDTH_3=1,
-	NRF_ADDR_WIDTH_4=2,
-	NRF_ADDR_WIDTH_5=3
+typedef enum {
+    NRF_ADDR_WIDTH_3      = 1,
+    NRF_ADDR_WIDTH_4      = 2,
+    NRF_ADDR_WIDTH_5      = 3
 } NRF_ADDR_WIDTH;
 
-typedef enum{
-	NRF_CRC_WIDTH_1B=0,
-	NRF_CRC_WIDTH_2B=1
+typedef enum {
+    NRF_CRC_WIDTH_1B      = 0,
+    NRF_CRC_WIDTH_2B      = 1
 } NRF_CRC_WIDTH;
 
 typedef enum{
-	NRF_STATE_RX=1,
-	NRF_STATE_TX=0
+    NRF_STATE_RX          = 1,
+    NRF_STATE_TX          = 0
 } NRF_TXRX_STATE;
 
-typedef struct{
-	SPI_HandleTypeDef* spi;
-	NRF_DATA_RATE 	DATA_RATE;
-	uint8_t			RF_CHANNEL;
-	uint8_t			PayloadLength;
-	uint8_t			RetransmitCount;
-	uint8_t			RetransmitDelay;
-	NRF_TX_PWR		TX_POWER;
-	uint8_t*		RX_ADDRESS;
-	uint8_t*		TX_ADDRESS;
-	NRF_CRC_WIDTH	CRC_WIDTH;
-	NRF_ADDR_WIDTH	ADDR_WIDTH;
-	NRF_TXRX_STATE	STATE;
-	uint8_t			BUSY_FLAG;
+typedef struct {
+    SPI_HandleTypeDef* 	spi;
+    NRF_DATA_RATE 		DATA_RATE;
+    uint8_t				RF_CHANNEL;
+    uint8_t				PayloadLength;
+    uint8_t				RetransmitCount;
+    uint8_t				RetransmitDelay;
+    NRF_TX_PWR			TX_POWER;
+    uint8_t*			RX_ADDRESS;
+    uint8_t*			TX_ADDRESS;
+    NRF_CRC_WIDTH		CRC_WIDTH;
+    NRF_ADDR_WIDTH		ADDR_WIDTH;
+    NRF_TXRX_STATE		STATE;
+    uint8_t				BUSY_FLAG;
 
-	uint8_t*		RX_BUFFER;
-	uint8_t*		TX_BUFFER;
+    uint8_t*			RX_BUFFER;
+    uint8_t*			TX_BUFFER;
 
-	GPIO_TypeDef*	NRF_CSN_GPIOx;	// CSN pin
-	uint16_t		NRF_CSN_GPIO_PIN;
+    GPIO_TypeDef*		NRF_CSN_GPIOx;	// CSN pin
+    uint16_t			NRF_CSN_GPIO_PIN;
 
-	GPIO_TypeDef*	NRF_CE_GPIOx;	// CE pin
-	uint16_t		NRF_CE_GPIO_PIN;
+    GPIO_TypeDef*		NRF_CE_GPIOx;	// CE pin
+    uint16_t			NRF_CE_GPIO_PIN;
 
-	GPIO_TypeDef*	NRF_IRQ_GPIOx;	// IRQ pin
-	uint16_t		NRF_IRQ_GPIO_PIN;
-	IRQn_Type		NRF_IRQn;
-	uint8_t			NRF_IRQ_preempt_priority;
-	uint8_t			NRF_IRQ_sub_priority;
+    GPIO_TypeDef*		NRF_IRQ_GPIOx;	// IRQ pin
+    uint16_t			NRF_IRQ_GPIO_PIN;
+    IRQn_Type			NRF_IRQn;
+    uint8_t				NRF_IRQ_preempt_priority;
+    uint8_t				NRF_IRQ_sub_priority;
 
 } NRF24L01;
 
-typedef enum{
-	NRF_OK,
-	NRF_ERROR
+typedef enum {
+    NRF_OK,
+    NRF_ERROR
 } NRF_RESULT;
 
 

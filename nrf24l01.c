@@ -2,7 +2,7 @@
 
 void NRF_CS_ENABLE(NRF24L01* dev) {
 	HAL_GPIO_WritePin(dev->NRF_CSN_GPIOx, dev->NRF_CSN_GPIO_PIN,
-			GPIO_PIN_RESET);
+					  GPIO_PIN_RESET);
 }
 
 void NRF_CS_DISABLE(NRF24L01* dev) {
@@ -38,7 +38,7 @@ NRF_RESULT NRF_SetupGPIO(NRF24L01* dev) {
 
 	/* Enable and set EXTI Line Interrupt to the given priority */
 	HAL_NVIC_SetPriority(dev->NRF_IRQn, dev->NRF_IRQ_preempt_priority,
-			dev->NRF_IRQ_sub_priority);
+						 dev->NRF_IRQ_sub_priority);
 	HAL_NVIC_EnableIRQ(dev->NRF_IRQn);
 	// end IRQ pin
 
@@ -56,7 +56,7 @@ NRF_RESULT NRF_Init(NRF24L01* dev) {
 
 	uint8_t config=0;
 
-	while((config&2)==0){	// wait for powerup
+	while((config&2)==0) {	// wait for powerup
 		NRF_ReadRegister(dev,NRF_CONFIG,&config);
 	}
 
@@ -527,7 +527,7 @@ NRF_RESULT NRF_SendPacket(NRF24L01* dev, uint8_t* data) {
 	NRF_WriteTXPayload(dev, data);
 	NRF_CE_ENABLE(dev);
 
-	while (dev->BUSY_FLAG == 1);	// wait for end of transmittion
+	while (dev->BUSY_FLAG == 1) {;}	// wait for end of transmittion
 
 	return NRF_OK;
 }
@@ -540,7 +540,7 @@ NRF_RESULT NRF_ReceivePacket(NRF24L01* dev, uint8_t* data) {
 	NRF_RXTXControl(dev, NRF_STATE_RX);
 	NRF_CE_ENABLE(dev);
 
-	while (dev->BUSY_FLAG == 1);	// wait for reception
+	while (dev->BUSY_FLAG == 1) {;}	// wait for reception
 
 	int i = 0;
 	for (i = 0; i < dev->PayloadLength; i++) {
@@ -552,9 +552,9 @@ NRF_RESULT NRF_ReceivePacket(NRF24L01* dev, uint8_t* data) {
 
 NRF_RESULT NRF_PushPacket(NRF24L01* dev, uint8_t* data) {
 
-	if(dev->BUSY_FLAG==1){
+	if(dev->BUSY_FLAG==1) {
 		NRF_FlushTX(dev);
-	}else{
+	} else {
 		dev->BUSY_FLAG = 1;
 	}
 	NRF_CE_DISABLE(dev);
