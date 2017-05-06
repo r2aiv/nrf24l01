@@ -1,19 +1,19 @@
 #include "nrf24l01.h"
 
-void NRF_CS_ENABLE(NRF24L01* dev) {
+static void NRF_CS_SETPIN(NRF24L01* dev) {
 	HAL_GPIO_WritePin(dev->NRF_CSN_GPIOx, dev->NRF_CSN_GPIO_PIN,
 					  GPIO_PIN_RESET);
 }
 
-void NRF_CS_DISABLE(NRF24L01* dev) {
+static void NRF_CS_RESETPIN(NRF24L01* dev) {
 	HAL_GPIO_WritePin(dev->NRF_CSN_GPIOx, dev->NRF_CSN_GPIO_PIN, GPIO_PIN_SET);
 }
 
-void NRF_CE_ENABLE(NRF24L01* dev) {
+static void NRF_CE_SETPIN(NRF24L01* dev) {
 	HAL_GPIO_WritePin(dev->NRF_CE_GPIOx, dev->NRF_CE_GPIO_PIN, GPIO_PIN_SET);
 }
 
-void NRF_CE_DISABLE(NRF24L01* dev) {
+static void NRF_CE_RESETPIN(NRF24L01* dev) {
 	HAL_GPIO_WritePin(dev->NRF_CE_GPIOx, dev->NRF_CE_GPIO_PIN, GPIO_PIN_RESET);
 }
 
@@ -42,8 +42,8 @@ NRF_RESULT NRF_SetupGPIO(NRF24L01* dev) {
 	HAL_NVIC_EnableIRQ(dev->NRF_IRQn);
 	// end IRQ pin
 
-	NRF_CS_DISABLE(dev);
-	NRF_CE_DISABLE(dev);
+	NRF_CS_RESETPIN(dev);
+	NRF_CE_RESETPIN(dev);
 
 	return NRF_OK;
 }
@@ -98,7 +98,7 @@ NRF_RESULT NRF_SendCommand(NRF24L01* dev, uint8_t cmd, uint8_t* tx, uint8_t* rx,
 		myRX[i] = 0;
 	}
 
-	NRF_CS_ENABLE(dev);
+	NRF_CS_SETPIN(dev);
 	if (HAL_SPI_TransmitReceive(dev->spi, myTX, myRX, 1 + len, NRF_SPI_TIMEOUT)
 			!= HAL_OK) {
 		return NRF_ERROR;
@@ -108,7 +108,7 @@ NRF_RESULT NRF_SendCommand(NRF24L01* dev, uint8_t cmd, uint8_t* tx, uint8_t* rx,
 		rx[i] = myRX[1 + i];
 	}
 
-	NRF_CS_DISABLE(dev);
+	NRF_CS_RESETPIN(dev);
 
 	return NRF_OK;
 }
@@ -121,7 +121,7 @@ void NRF_IRQ_Handler(NRF24L01* dev) {
 
 	if ((status & (1 << 6))) {	// RX FIFO Interrupt
 		uint8_t fifo_status = 0;
-		NRF_CE_DISABLE(dev);
+		NRF_CE_RESETPIN(dev);
 		NRF_WriteRegister(dev, NRF_STATUS, &status);
 		NRF_ReadRegister(dev, NRF_FIFO_STATUS, &fifo_status);
 		if (dev->BUSY_FLAG == 1 && (fifo_status & 1) == 0) {
@@ -131,14 +131,14 @@ void NRF_IRQ_Handler(NRF24L01* dev) {
 			//NRF_FlushRX(dev);
 			dev->BUSY_FLAG=0;
 		}
-		NRF_CE_ENABLE(dev);
+		NRF_CE_SETPIN(dev);
 	}
 	if ((status & (1 << 5))) {	// TX Data Sent Interrupt
 		status |= 1 << 5;	// clear the interrupt flag
-		NRF_CE_DISABLE(dev);
+		NRF_CE_RESETPIN(dev);
 		NRF_RXTXControl(dev, NRF_STATE_RX);
 		dev->STATE = NRF_STATE_RX;
-		NRF_CE_ENABLE(dev);
+		NRF_CE_SETPIN(dev);
 		NRF_WriteRegister(dev, NRF_STATUS, &status);
 		dev->BUSY_FLAG=0;
 	}
@@ -149,10 +149,10 @@ void NRF_IRQ_Handler(NRF24L01* dev) {
 		NRF_PowerUp(dev,0);	// power down
 		NRF_PowerUp(dev,1);	// power up
 
-		NRF_CE_DISABLE(dev);
+		NRF_CE_RESETPIN(dev);
 		NRF_RXTXControl(dev, NRF_STATE_RX);
 		dev->STATE = NRF_STATE_RX;
-		NRF_CE_ENABLE(dev);
+		NRF_CE_SETPIN(dev);
 
 		NRF_WriteRegister(dev, NRF_STATUS, &status);
 		dev->BUSY_FLAG=0;
@@ -522,10 +522,10 @@ NRF_RESULT NRF_SendPacket(NRF24L01* dev, uint8_t* data) {
 
 	dev->BUSY_FLAG = 1;
 
-	NRF_CE_DISABLE(dev);
+	NRF_CE_RESETPIN(dev);
 	NRF_RXTXControl(dev, NRF_STATE_TX);
 	NRF_WriteTXPayload(dev, data);
-	NRF_CE_ENABLE(dev);
+	NRF_CE_SETPIN(dev);
 
 	while (dev->BUSY_FLAG == 1) {;}	// wait for end of transmittion
 
@@ -536,9 +536,9 @@ NRF_RESULT NRF_ReceivePacket(NRF24L01* dev, uint8_t* data) {
 
 	dev->BUSY_FLAG = 1;
 
-	NRF_CE_DISABLE(dev);
+	NRF_CE_RESETPIN(dev);
 	NRF_RXTXControl(dev, NRF_STATE_RX);
-	NRF_CE_ENABLE(dev);
+	NRF_CE_SETPIN(dev);
 
 	while (dev->BUSY_FLAG == 1) {;}	// wait for reception
 
@@ -557,10 +557,10 @@ NRF_RESULT NRF_PushPacket(NRF24L01* dev, uint8_t* data) {
 	} else {
 		dev->BUSY_FLAG = 1;
 	}
-	NRF_CE_DISABLE(dev);
+	NRF_CE_RESETPIN(dev);
 	NRF_RXTXControl(dev, NRF_STATE_TX);
 	NRF_WriteTXPayload(dev, data);
-	NRF_CE_ENABLE(dev);
+	NRF_CE_SETPIN(dev);
 
 	return NRF_OK;
 }
