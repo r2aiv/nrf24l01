@@ -17,7 +17,7 @@ static void NRF_CE_RESETPIN(nrf24L01_Dev* dev) {
 	HAL_GPIO_WritePin(dev->NRF_CE_GPIOx, dev->NRF_CE_GPIO_PIN, GPIO_PIN_RESET);
 }
 
-NRF_RESULT NRF_SetupGPIO(nrf24L01_Dev* dev) {
+static NRF_RESULT NRF_SetupGPIO(nrf24L01_Dev* dev) {
 
 	GPIO_InitTypeDef GPIO_InitStructure;
 
