@@ -511,7 +511,7 @@ NRF_RESULT NRF_SetTXAddress(nrf24L01_Dev* dev, uint8_t* address) {
 }
 
 NRF_RESULT NRF_SetRXPayloadWidth_P0(nrf24L01_Dev* dev, uint8_t width) {
-	width &= 0x2F;
+	width &= 0x3F;
 	if (NRF_WriteRegister(dev, NRF_RX_PW_P0, &width) != NRF_OK) {
 		return NRF_ERROR;
 	}
