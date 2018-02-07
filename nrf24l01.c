@@ -36,6 +36,13 @@ static NRF_RESULT NRF_SetupGPIO(nrf24L01_Dev* dev) {
 	GPIO_InitStructure.Pin = dev->NRF_IRQ_GPIO_PIN;
 	HAL_GPIO_Init(dev->NRF_IRQ_GPIOx, &GPIO_InitStructure);
 
+	// CSN pin
+	GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStructure.Pull = GPIO_NOPULL;
+	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
+	GPIO_InitStructure.Pin = dev->NRF_CSN_GPIO_PIN;
+
+	HAL_GPIO_Init(dev->NRF_CSN_GPIOx, &GPIO_InitStructure);
 	/* Enable and set EXTI Line Interrupt to the given priority */
 	HAL_NVIC_SetPriority(dev->NRF_IRQn, dev->NRF_IRQ_preempt_priority,
 						 dev->NRF_IRQ_sub_priority);
