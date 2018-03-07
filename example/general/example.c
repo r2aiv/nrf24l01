@@ -1,5 +1,4 @@
 #include "nrf24l01.h"
-#include "stm32f4xx_hal.h"
 
 extern SPI_HandleTypeDef hspi1;
 
@@ -22,7 +21,7 @@ void example() {
         config.irq_port = GPIOA;
         config.irq_pin  = GPIO_PIN_2;
 
-        NRF_Init(&nrf, &config);
+        nrf_init(&nrf, &config);
     }
 
     bool send_packet = true;

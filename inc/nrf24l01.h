@@ -114,8 +114,8 @@ typedef struct {
     volatile NRF_TXRX_STATE state;
 
     /* RX/TX Buffer */
-    uint8_t* rx_buf;
-    uint8_t* tx_buf;
+    uint8_t* rx_buffer;
+    uint8_t* tx_buffer;
 } nrf24l01;
 
 /* Initialization routine */
@@ -170,7 +170,7 @@ NRF_RESULT nrf_enable_auto_ack(nrf24l01* dev, uint8_t pipe);
 // TODO disable AA?
 
 /* CONFIG */
-NRF_RESULT nrf_enable_crc(nrf24l01* dev, uint8_t activate);
+NRF_RESULT nrf_enable_crc(nrf24l01* dev, bool activate);
 NRF_RESULT nrf_set_crc_width(nrf24l01* dev, NRF_CRC_WIDTH width);
 NRF_RESULT nrf_power_up(nrf24l01* dev, bool power_up);
 NRF_RESULT nrf_rx_tx_control(nrf24l01* dev, NRF_TXRX_STATE rx);
