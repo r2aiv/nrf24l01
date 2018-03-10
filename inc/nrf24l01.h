@@ -99,6 +99,9 @@ typedef struct {
     SPI_HandleTypeDef* spi;
     uint32_t           spi_timeout;
 
+    GPIO_TypeDef* csn_port;
+    uint16_t      csn_pin;
+
     GPIO_TypeDef* ce_port;
     uint16_t      ce_pin;
 
@@ -113,9 +116,8 @@ typedef struct {
     volatile uint8_t        busy;
     volatile NRF_TXRX_STATE state;
 
-    /* RX/TX Buffer */
+    /* Receive Buffer, see nrf_irq_handler */
     uint8_t* rx_buffer;
-    uint8_t* tx_buffer;
 } nrf24l01;
 
 /* Initialization routine */
@@ -124,13 +126,14 @@ NRF_RESULT nrf_init(nrf24l01* dev, nrf24l01_config* config);
 /* EXTI Interrupt Handler */
 void nrf_irq_handler(nrf24l01* dev);
 
-/* Blocking Data Sending / Receiving FXs */
+/* Blocking Data Sending */
 NRF_RESULT nrf_send_packet(nrf24l01* dev, uint8_t* data);
-NRF_RESULT nrf_receive_packet(nrf24l01* dev, uint8_t* data);
 
-/* Non-Blocking Data Sending / Receiving FXs */
+/* Non-Blocking Data Sending */
 NRF_RESULT nrf_push_packet(nrf24l01* dev, uint8_t* data);
-NRF_RESULT nrf_pull_packet(nrf24l01* dev, uint8_t* data);
+
+/* Override this function to handle received data */
+__weak void nrf_packet_received(uint8_t* data);
 
 /* LOW LEVEL STUFF (you don't have to look in here...)*/
 NRF_RESULT nrf_send_command(nrf24l01* dev, NRF_COMMAND cmd, uint8_t* tx,

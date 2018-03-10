@@ -8,10 +8,19 @@ static void ce_reset(nrf24l01* dev) {
     HAL_GPIO_WritePin(dev->config.ce_port, dev->config.ce_pin, GPIO_PIN_RESET);
 }
 
+static void csn_set(nrf24l01* dev) {
+    HAL_GPIO_WritePin(dev->config.csn_port, dev->config.csn_pin, GPIO_PIN_SET);
+}
+
+static void csn_reset(nrf24l01* dev) {
+    HAL_GPIO_WritePin(dev->config.csn_port, dev->config.csn_pin, GPIO_PIN_RESET);
+}
+
 NRF_RESULT nrf_init(nrf24l01* dev, nrf24l01_config* config) {
     dev->config = *config;
 
     ce_reset(dev);
+    csn_reset(dev);
 
     nrf_power_up(dev, true);
 
@@ -43,6 +52,7 @@ NRF_RESULT nrf_init(nrf24l01* dev, nrf24l01_config* config) {
     nrf_rx_tx_control(dev, NRF_STATE_RX);
 
     nrf_flush_rx(dev);
+    ce_set(dev);
 
     return NRF_OK;
 }
@@ -59,12 +69,16 @@ NRF_RESULT nrf_send_command(nrf24l01* dev, NRF_COMMAND cmd, uint8_t* tx,
         myRX[i]     = 0;
     }
 
+    csn_reset(dev);
+
     if (HAL_SPI_TransmitReceive(dev->config.spi, myTX, myRX, 1 + len,
                                 dev->config.spi_timeout) != HAL_OK) {
         return NRF_ERROR;
     }
 
     for (i = 0; i < len; i++) { rx[i] = myRX[1 + i]; }
+
+    csn_set(dev);
 
     return NRF_OK;
 }
@@ -78,12 +92,12 @@ void nrf_irq_handler(nrf24l01* dev) {
         ce_reset(dev);
         nrf_write_register(dev, NRF_STATUS, &status);
         nrf_read_register(dev, NRF_FIFO_STATUS, &fifo_status);
-        if (dev->busy == 1 && (fifo_status & 1) == 0) {
+        if ((fifo_status & 1) == 0) {
             nrf_read_rx_payload(dev, dev->rx_buffer);
             status |= 1 << 6;
             nrf_write_register(dev, NRF_STATUS, &status);
             // nrf_flush_rx(dev);
-            dev->busy = 0;
+            nrf_packet_received(dev->rx_buffer);
         }
         ce_set(dev);
     }
@@ -493,24 +507,6 @@ NRF_RESULT nrf_send_packet(nrf24l01* dev, uint8_t* data) {
     return NRF_OK;
 }
 
-NRF_RESULT nrf_receive_packet(nrf24l01* dev, uint8_t* data) {
-
-    dev->busy = 1;
-
-    ce_reset(dev);
-    nrf_rx_tx_control(dev, NRF_STATE_RX);
-    ce_set(dev);
-
-    while (dev->busy == 1) {} // wait for reception
-
-    int i = 0;
-    for (i = 0; i < dev->config.payload_length; i++) {
-        data[i] = dev->rx_buffer[i];
-    }
-
-    return NRF_OK;
-}
-
 NRF_RESULT nrf_push_packet(nrf24l01* dev, uint8_t* data) {
 
     if (dev->busy == 1) {
@@ -526,12 +522,3 @@ NRF_RESULT nrf_push_packet(nrf24l01* dev, uint8_t* data) {
     return NRF_OK;
 }
 
-NRF_RESULT nrf_pull_packet(nrf24l01* dev, uint8_t* data) {
-
-    int i = 0;
-    for (i = 0; i < dev->config.payload_length; i++) {
-        data[i] = dev->rx_buffer[i];
-    }
-
-    return NRF_OK;
-}
