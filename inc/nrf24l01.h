@@ -211,7 +211,7 @@ NRF_RESULT nrf_enable_max_retransmit_irq(nrf24l01* dev, bool activate);
 NRF_RESULT nrf_set_rx_address_p0(nrf24l01* dev,
                                  uint8_t*  address); // 5bytes of address
 
-/* RX_ADDR_P0 */
+/* RX_ADDR_P1 */
 NRF_RESULT nrf_set_rx_address_p1(nrf24l01* dev,
                                  uint8_t*  address); // 5bytes of address
 
@@ -222,5 +222,5 @@ NRF_RESULT nrf_set_tx_address(nrf24l01* dev,
 /* RX_PW_P0 */
 NRF_RESULT nrf_set_rx_payload_width_p0(nrf24l01* dev, uint8_t width);
 
-/* RX_PW_P0 */
+/* RX_PW_P1 */
 NRF_RESULT nrf_set_rx_payload_width_p1(nrf24l01* dev, uint8_t width);
