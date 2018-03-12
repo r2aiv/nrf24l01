@@ -1,0 +1,27 @@
+language: c
+
+addons:
+  apt:
+    packages:
+    - libc6-i386
+    - lib32ncurses5
+
+dist: trusty
+sudo: false
+
+cache:
+    directories:
+        - gcc-arm-none-eabi-5_4-2016q3
+
+before_script:
+    - make toolchain
+    - export BINPATH=$PWD/gcc-arm-none-eabi-5_4-2016q3/bin
+
+jobs:
+  include:
+    - stage: style_check
+      script:
+        - make style_check
+    - stage: build
+      script:
+        - make examples

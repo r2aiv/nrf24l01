@@ -128,29 +128,31 @@ NRF_RESULT nrf_init(nrf24l01* dev, nrf24l01_config* config);
 
 /* EXTI Interrupt Handler
  *
- * You must call this function on Falling edge trigger detection interrupt handler,
- * typically, from HAL_GPIO_EXTI_Callback  */
+ * You must call this function on Falling edge trigger detection interrupt
+ * handler, typically, from HAL_GPIO_EXTI_Callback  */
 void nrf_irq_handler(nrf24l01* dev);
 
 /* Asynchronous Data Receiving (__weak)
  *
  * Override this function to handle received data asynchronously,
- * default implementation is used in favor of nrf_receive_packet for blocking data receiving */
+ * default implementation is used in favor of nrf_receive_packet for blocking
+ * data receiving */
 void nrf_packet_received_callback(nrf24l01* dev, uint8_t* data);
 
 /* Blocking Data Receiving
  *
  * Blocks until the data has arrived, then returns a pointer to received data.
- * Please note, once nrf_packet_received_callback routine is overridden, this one will stop working. */
+ * Please note, once nrf_packet_received_callback routine is overridden, this
+ * one will stop working. */
 const uint8_t* nrf_receive_packet(nrf24l01* dev);
 
 /* Blocking Data Sending
  *
  * If the AA is enabled (default), this method will return:
  *   NRF_OK - the data has been acknowledged by other party
- *   NRF_ERROR - the data has not been received (maximum retransmissions has occurred)
- * If the AA is disabled, returns NRF_OK once the data has been transmitted
- *   (with no guarantee the data was actually received). */
+ *   NRF_ERROR - the data has not been received (maximum retransmissions has
+ * occurred) If the AA is disabled, returns NRF_OK once the data has been
+ * transmitted (with no guarantee the data was actually received). */
 NRF_RESULT nrf_send_packet(nrf24l01* dev, const uint8_t* data);
 
 /* Blocking Data Sending, with NO_ACK flag

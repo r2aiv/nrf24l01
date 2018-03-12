@@ -13,7 +13,8 @@ static void csn_set(nrf24l01* dev) {
 }
 
 static void csn_reset(nrf24l01* dev) {
-    HAL_GPIO_WritePin(dev->config.csn_port, dev->config.csn_pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(dev->config.csn_port, dev->config.csn_pin,
+                      GPIO_PIN_RESET);
 }
 
 NRF_RESULT nrf_init(nrf24l01* dev, nrf24l01_config* config) {
@@ -113,7 +114,7 @@ void nrf_irq_handler(nrf24l01* dev) {
         ce_set(dev);
         nrf_write_register(dev, NRF_STATUS, &status);
         dev->tx_result = NRF_OK;
-        dev->tx_busy = 0;
+        dev->tx_busy   = 0;
     }
     if ((status & (1 << 4))) { // MaxRetransmits reached
         status |= 1 << 4;
@@ -129,14 +130,13 @@ void nrf_irq_handler(nrf24l01* dev) {
 
         nrf_write_register(dev, NRF_STATUS, &status);
         dev->tx_result = NRF_ERROR;
-        dev->tx_busy = 0;
+        dev->tx_busy   = 0;
     }
 }
 
-__weak void nrf_packet_received_callback(nrf24l01* dev, uint8_t* data)
-{
-	// default implementation (__weak) is used in favor of nrf_receive_packet
-	dev->rx_busy = 0;
+__weak void nrf_packet_received_callback(nrf24l01* dev, uint8_t* data) {
+    // default implementation (__weak) is used in favor of nrf_receive_packet
+    dev->rx_busy = 0;
 }
 
 NRF_RESULT nrf_read_register(nrf24l01* dev, uint8_t reg, uint8_t* data) {
@@ -541,8 +541,7 @@ NRF_RESULT nrf_send_packet(nrf24l01* dev, const uint8_t* data) {
     return dev->tx_result;
 }
 
-NRF_RESULT nrf_send_packet_noack(nrf24l01* dev, const uint8_t* data)
-{
+NRF_RESULT nrf_send_packet_noack(nrf24l01* dev, const uint8_t* data) {
     dev->tx_busy = 1;
 
     ce_reset(dev);
@@ -583,4 +582,3 @@ NRF_RESULT nrf_push_packet(nrf24l01* dev, const uint8_t* data) {
 
     return NRF_OK;
 }
-
