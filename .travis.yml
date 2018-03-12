@@ -20,9 +20,7 @@ before_script:
 
 jobs:
   include:
-    - stage: style_check
-      script:
-        - make style_check
     - stage: build
       script:
+        - make style_check
         - make examples
