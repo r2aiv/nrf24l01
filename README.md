@@ -8,7 +8,7 @@ Library for interfacing with NRF24L01(+) modules from an STM32 micro.
  - CI setup
 
 ## Hardware Setup
-NRF24L01 modules interface directly over SPI and two additional wires (CE, IRQ).
+NRF24L01 modules interface directly over SPI and three additional wires (CE, CSN and IRQ).
 
 ## Software Setup
 Fill out all the parameters in the `nrf24l01_config` structure and call
