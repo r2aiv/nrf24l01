@@ -3,7 +3,7 @@ $(wildcard inc/*.h) \
 $(wildcard src/*.c) \
 $(wildcard example/general/*)
 
-.PHONY: examples clean
+.PHONY: examples clean docs
 
 format:
 	clang-format -i $(sources) $$(find example -name main.c)
@@ -20,8 +20,14 @@ gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-gcc:
 
 toolchain: gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-gcc
 
+docs:
+	mkdir -p docs
+	doxygen
+	moxygen docs/xml
+
 examples:
 	make -C example/stm32f1
 
 clean:
 	make -C example/stm32f1 clean
+	rm -rf docs

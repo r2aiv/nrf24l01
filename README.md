@@ -4,10 +4,13 @@
 Library for interfacing with NRF24L01(+) modules from an STM32 micro.
 
 ## TODO
+ - make CSN pin optional
+ - revert rx_buffer changes
+ - get rid of `__weak` in favor of function pointers
+ - documentation
  - stm32f0 example
  - stm32f1 example
  - stm32f4 example
- - CI setup
 
 ## Hardware Setup
 NRF24L01 modules interface directly over SPI and three additional wires (CE, CSN and IRQ).
