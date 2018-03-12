@@ -121,8 +121,6 @@ typedef struct {
     volatile uint8_t        rx_busy;
     volatile NRF_TXRX_STATE state;
 
-    /* Receive Buffer, see nrf_irq_handler */
-    uint8_t* rx_buffer;
 } nrf24l01;
 
 /* Initialization routine */

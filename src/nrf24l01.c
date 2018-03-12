@@ -18,7 +18,6 @@ static void csn_reset(nrf24l01* dev) {
 
 NRF_RESULT nrf_init(nrf24l01* dev, nrf24l01_config* config) {
     dev->config = *config;
-    dev->rx_buffer = dev->config.rx_buffer;
 
     ce_reset(dev);
     csn_reset(dev);
@@ -97,11 +96,12 @@ void nrf_irq_handler(nrf24l01* dev) {
         nrf_write_register(dev, NRF_STATUS, &status);
         nrf_read_register(dev, NRF_FIFO_STATUS, &fifo_status);
         if ((fifo_status & 1) == 0) {
-            nrf_read_rx_payload(dev, dev->rx_buffer);
+        	uint8_t* rx_buffer = dev->config.rx_buffer;
+            nrf_read_rx_payload(dev, rx_buffer);
             status |= 1 << 6;
             nrf_write_register(dev, NRF_STATUS, &status);
             // nrf_flush_rx(dev);
-            nrf_packet_received_callback(dev, dev->rx_buffer);
+            nrf_packet_received_callback(dev, rx_buffer);
         }
         ce_set(dev);
     }
@@ -565,7 +565,7 @@ const uint8_t* nrf_receive_packet(nrf24l01* dev) {
 
     while (dev->rx_busy == 1) {} // wait for reception
 
-    return dev->rx_buffer;
+    return dev->config.rx_buffer;
 }
 
 NRF_RESULT nrf_push_packet(nrf24l01* dev, const uint8_t* data) {
