@@ -96,7 +96,7 @@ void nrf_irq_handler(nrf24l01* dev) {
         nrf_write_register(dev, NRF_STATUS, &status);
         nrf_read_register(dev, NRF_FIFO_STATUS, &fifo_status);
         if ((fifo_status & 1) == 0) {
-        	uint8_t* rx_buffer = dev->config.rx_buffer;
+            uint8_t* rx_buffer = dev->config.rx_buffer;
             nrf_read_rx_payload(dev, rx_buffer);
             status |= 1 << 6;
             nrf_write_register(dev, NRF_STATUS, &status);
