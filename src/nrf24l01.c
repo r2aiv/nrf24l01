@@ -48,7 +48,7 @@ NRF_RESULT nrf_init(nrf24l01* dev, nrf24l01_config* config) {
     nrf_set_retransmittion_count(dev, dev->config.retransmit_count);
     nrf_set_retransmittion_delay(dev, dev->config.retransmit_delay);
 
-    nrf_enable_rx_pipes(dev, 0x03);
+    nrf_set_rx_pipes(dev, 0x03);
     nrf_enable_auto_ack(dev, 0);
 
     nrf_clear_interrupts(dev);
@@ -335,7 +335,7 @@ NRF_RESULT nrf_set_address_width(nrf24l01* dev, NRF_ADDR_WIDTH width) {
     return NRF_OK;
 }
 
-NRF_RESULT nrf_enable_rx_pipes(nrf24l01* dev, uint8_t pipes) {
+NRF_RESULT nrf_set_rx_pipes(nrf24l01* dev, uint8_t pipes) {
     if (nrf_write_register(dev, NRF_EN_RXADDR, &pipes) != NRF_OK) {
         return NRF_ERROR;
     }
