@@ -3,7 +3,7 @@ language: c
 addons:
   apt:
     packages:
-    - clang-format
+    - clang-format-3.9
     - libc6-i386
     - lib32ncurses5
 
