@@ -30,7 +30,7 @@ used to make subsequent library calls.
   Override this function (it is `__weak` by default) to handle received data asynchronously,
 default implementation is used in favor of `nrf_receive_packet` for blocking data receiving
 
-### Blocking Data Receiving
+### TODO: Revert: Blocking Data Receiving
 * `const uint8_t* nrf_receive_packet(nrf24l01* dev)`
 
   Blocks until the data has arrived, then returns a pointer to received data. Please note, once `nrf_packet_received_callback` routine is overridden, this one will stop working.

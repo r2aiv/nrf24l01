@@ -89,12 +89,12 @@ typedef struct {
     NRF_CRC_WIDTH  crc_width;
     NRF_ADDR_WIDTH addr_width;
 
-    uint8_t  payload_length;
-    uint8_t  retransmit_count;
-    uint8_t  retransmit_delay;
-    uint8_t  rf_channel;
-    uint8_t* rx_address;
-    uint8_t* tx_address;
+    uint8_t        payload_length;
+    uint8_t        retransmit_count;
+    uint8_t        retransmit_delay;
+    uint8_t        rf_channel;
+    const uint8_t* rx_address;
+    const uint8_t* tx_address;
 
     /* Must be sufficient size according to payload_length */
     uint8_t* rx_buffer;
@@ -210,16 +210,16 @@ NRF_RESULT nrf_enable_tx_data_sent_irq(nrf24l01* dev, bool activate);
 NRF_RESULT nrf_enable_max_retransmit_irq(nrf24l01* dev, bool activate);
 
 /* RX_ADDR_P0 */
-NRF_RESULT nrf_set_rx_address_p0(nrf24l01* dev,
-                                 uint8_t*  address); // 5bytes of address
+NRF_RESULT nrf_set_rx_address_p0(nrf24l01*      dev,
+                                 const uint8_t* address); // 5bytes of address
 
 /* RX_ADDR_P1 */
-NRF_RESULT nrf_set_rx_address_p1(nrf24l01* dev,
-                                 uint8_t*  address); // 5bytes of address
+NRF_RESULT nrf_set_rx_address_p1(nrf24l01*      dev,
+                                 const uint8_t* address); // 5bytes of address
 
 /* TX_ADDR */
-NRF_RESULT nrf_set_tx_address(nrf24l01* dev,
-                              uint8_t*  address); // 5bytes of address
+NRF_RESULT nrf_set_tx_address(nrf24l01*      dev,
+                              const uint8_t* address); // 5bytes of address
 
 /* RX_PW_P0 */
 NRF_RESULT nrf_set_rx_payload_width_p0(nrf24l01* dev, uint8_t width);
