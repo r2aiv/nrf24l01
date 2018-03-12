@@ -34,13 +34,12 @@ void example() {
     }
 
     uint32_t tx_data = 0xDEADBEEF;
-    uint32_t rx_data = 0;
 
     nrf_send_packet(&nrf, (uint8_t*)&tx_data);
 
     while (true) {
-        nrf_receive_packet(&nrf, (uint8_t*)&rx_data);
-        if (tx_data != rx_data) error();
+        const uint8_t* rx_data = nrf_receive_packet(&nrf);
+        if (tx_data != *((uint32_t*)rx_data)) error();
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         HAL_Delay(500);
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
